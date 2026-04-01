@@ -1,5 +1,9 @@
 FROM ghcr.io/micromdm/nanomdm:latest
 
-EXPOSE 9000
+RUN apk add --no-cache openssl && \
+    mkdir -p /certs && \
+        openssl req -x509 -newkey rsa:2048 -keyout /certs/ca.key -out /certs/ca.pem -days 3650 -nodes -subj "/CN=DomNode MDM CA"
 
-CMD ["-listen", ":9000", "-api", "DomNodeAPI2026"]
+        EXPOSE 9000
+
+        CMD ["-listen", ":9000", "-api", "DomNodeAPI2026", "-ca", "/certs/ca.pem"]
